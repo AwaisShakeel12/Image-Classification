@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Classification</title>
+</head>
+<body>
+    <h1>Image Classification</h1>
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    {% if success %}
+        <p style="color: green;">{{ success }}</p>
+    {% endif %}
+
+    <form action="" method="post">
+        {% csrf_token %}
+        <label for="input_folder">Input Folder Path:</label>
+        <input type="text" id="input_folder" name="input_folder" placeholder="Enter input folder path" required>
+        <br><br>
+        <label for="output_folder">Output Folder Path:</label>
+        <input type="text" id="output_folder" name="output_folder" placeholder="Enter output folder path" required>
+        <br><br>
+        <button type="submit">Classify Images</button>
+    </form>
+</body>
+</html>

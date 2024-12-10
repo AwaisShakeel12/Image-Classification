@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Classification</title>
+    <style>
+        /* General Body Styles */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            background: linear-gradient(135deg, #c1e1c1, #f8b195); /* Soft pastel gradient */
+        }
+
+        /* Left Side with Full-Height Falling Animation */
+        .left {
+            width: 40%;
+            background: linear-gradient(135deg, #d3c4f3, #f5e6cc); /* Gradient for left side */
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Flowers Falling from Top to Bottom */
+        .flower {
+            position: absolute;
+            top: -10%; /* Start slightly off-screen */
+            animation: fall 7s linear infinite; /* Loop continuously */
+            opacity: 0.9;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-10%) rotate(0deg); /* Start above the screen */
+            }
+            100% {
+                transform: translateY(110vh) rotate(360deg); /* End below the screen */
+            }
+        }
+
+        /* Random flower positions and animation speeds */
+        .flower:nth-child(1) { left: 5%; animation-duration: 6s; }
+        .flower:nth-child(2) { left: 20%; animation-duration: 7s; }
+        .flower:nth-child(3) { left: 40%; animation-duration: 8s; }
+        .flower:nth-child(4) { left: 60%; animation-duration: 5s; }
+        .flower:nth-child(5) { left: 80%; animation-duration: 9s; }
+
+        /* Right Side with Animated Form and Output */
+        .right {
+            width: 60%;
+            padding: 20px;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+            animation: slideIn 2s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .container {
+            width: 80%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            animation: fadeIn 3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        button {
+            background-color: #ed85d0; /* Coral shade */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #f55eb4;
+            transform: scale(1.1); /* Slight zoom effect */
+        }
+
+        .output {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            text-align: left;
+            min-height: 50px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
+            .left {
+                width: 100%;
+                height: 40%;
+            }
+
+            .right {
+                width: 100%;
+                height: 60%;
+                box-shadow: none;
+            }
+        }
+
+
+        /* Right Panel */
+        .right-panel {
+            width: 60%;
+            padding: 30px;
+            background: linear-gradient(135deg, #ffffff, #f7f8fc);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .right-panel h1 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Chat Input */
+        .chatbot-input {
+            display: flex;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .chatbot-input input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            outline: none;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease-in-out;
+        }
+
+        .chatbot-input input:focus {
+            box-shadow: 0 3px 20px rgba(0, 165, 255, 0.5);
+        }
+
+        .chatbot-input button {
+            margin-left: 10px;
+            padding: 15px 30px;
+            border: none;
+            background: linear-gradient(135deg, #00a5ff, #0078ff);
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 30px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.3s ease-in-out;
+        }
+
+        .chatbot-input button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 165, 255, 0.6);
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Left Side with Falling Flowers -->
+    <div class="left">
+        
+        <span style='font-size:100px;' alt="Flower" class="flower" style="width: 50px;">&#127800;</span>
+        <span style='font-size:100px;' alt="Flower" class="flower" style="width: 60px;">&#127802;</span>
+        <span style='font-size:100px;' alt="Flower" class="flower" style="width: 40px;">&#127800;</span>
+        <span style='font-size:100px;' alt="Flower" class="flower" style="width: 80px;">&#127802;</span>
+        <span style='font-size:100px;' alt="Flower" class="flower" style="width: 30px;">&#127808;</span>
+    
+
+    <div style="text-align: center; display: flex; align-items: center; justify-content: center;" >
+        <h1 style="color: whitesmoke;">Classification</h1>
+    </div>
+
+    </div>
+
+
+    
+
+
+    <!-- Right Side with Form -->
+    <div class="right">
+        <div class="container">
+            <h1 style="color: #f55eb4;">Image Classification</h1>
+
+            <!-- Form -->
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group chatbot-input">
+                   
+                    <input type="text" id="input_folder" name="input_folder" placeholder="Enter input folder path" required>
+                </div>
+                <div class="form-group chatbot-input">
+                   
+                    <input type="text" id="output_folder" name="output_folder" placeholder="Enter output folder path" required>
+                </div>
+                <button type="submit">Classify Images</button>
+            </form>
+
+            <!-- Placeholder Output Section -->
+            <div class="output">
+                {% if error %}
+                <p style="color: red;">{{ error }}</p>
+                {% endif %}
+                {% if success %}
+                    <p style="color: green;">{{ success }}</p>
+                {% endif %}
+                
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
